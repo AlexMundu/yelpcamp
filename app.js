@@ -15,7 +15,7 @@ const express        = require("express"),
     commentRoutes    = require("./routes/comments.js");
 
 //APP CONFIG
-mongoose.connect("mongodb://localhost/yelp_camp_v11");
+mongoose.connect(process.env.DATABASEURL);
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
