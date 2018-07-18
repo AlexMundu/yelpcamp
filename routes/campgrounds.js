@@ -1,7 +1,8 @@
 const express   = require("express"),
     router      = express.Router(),
     Campground  = require("../models/campground"),
-    middlewareObj = require("../middleware");
+    middlewareObj = require("../middleware"),
+    sanitizeHtml = require("sanitize-html");
 
 //INDEX - Display all campgrounds
 router.get("/", function(req, res){
@@ -26,6 +27,7 @@ router.post("/", middlewareObj.isLoggedIn, (req, res) => {
     id: req.user._id,
     username: req.user.username
   };
+  req.body.campground.description = sanitizeHtml(req.body.campground.description);
   Campground.create(req.body.campground, function(err, newlyCreatedCampground){
     if(err){
       req.flash("error", err.message);
@@ -60,6 +62,7 @@ router.get("/:id/edit", middlewareObj.checkCampgroundOwnership, (req, res) => {
 
 //UPDATE ROUTE
 router.put("/:id", middlewareObj.checkCampgroundOwnership, (req, res) => {
+  req.body.campground.description = sanitizeHtml(req.body.campground.description);
   Campground.findByIdAndUpdate(req.params.id, /* The information to update */req.body.campground, (err, updatedCampground) => {
     if (err) {
       req.flash("error", "Something went wrong");
